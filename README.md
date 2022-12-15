@@ -3,11 +3,45 @@
 
 
 ## 빌드 방법
+
+### 예제 ) Redis
+
+
 ### Dependency Graph
 ![plot](./pictures/dependency_graph.PNG)
 
+### Makefile
+
+Redis Application에 필요한 Unikraft 기본 라이브러리
+1. [lib-pthread-embedded](https://github.com/unikraft/lib-pthread-embedded.git)
+2. lib-newlib
+3. lib-lwip
+```
+UK_ROOT ?= $(PWD)/../../unikraft
+UK_LIBS ?= $(PWD)/../../libs
+LIBS := $(UK_LIBS)/lib-pthread-embedded:$(UK_LIBS)/lib-newlib:$(UK_LIBS)/lib-lwip:$(UK_LIBS)/lib-redis
+
+all:
+	@$(MAKE) -C $(UK_ROOT) A=$(PWD) L=$(LIBS)
+
+$(MAKECMDGOALS):
+	@$(MAKE) -C $(UK_ROOT) A=$(PWD) L=$(LIBS) $(MAKECMDGOALS)
+```
 
 
+
+
+```
+UK_ROOT ?= $(PWD)/../../unikraft
+UK_LIBS ?= $(PWD)/../../libs
+LIBS := $(UK_LIBS)/lib-lwip:$(UK_LIBS)/lib-pthread-embedded:$(UK_LIBS)/lib-newlib:$(UK_LIBS)/lib-nginx:$(UK_LIBS)/lib-tlsf
+
+all:
+	@$(MAKE) -C $(UK_ROOT) A=$(PWD) L=$(LIBS)
+
+$(MAKECMDGOALS):
+	@$(MAKE) -C $(UK_ROOT) A=$(PWD) L=$(LIBS) $(MAKECMDGOALS)
+```
 
 
 
@@ -18,36 +52,24 @@ Server와 연결할 Bridge 추가
 ```
 sudo brctl addbr br0
 sudo ip a a 172.44.0.1/24 dev br0
-sudo ip l set dev br0 u
+sudo ip l set dev br0 up
 ```
+
 
 QEMU + Unikraft Image 실행
 
-```
-sudo qemu-system-aarch64 -fsdev local,id=myid,path=$(pwd)/fs0,security_model=none \
- -device virtio-9p-pci,fsdev=myid,mount_tag=rootfs,disablemodern=on,disable-legacy=off \
- -netdev bridge,id=en0,br=br0 \
- -device virtio-net-pci,netdev=en0 \
- -kernel "build/app-redis_kvm-arm64" \
- -append "netdev.ipv4_addr=172.44.0.2 netdev.ipv4_gw_addr=172.44.0.1 netdev.ipv4_subnet_mask=255.255.255.0 -- /redis.conf" \
- -machine virt \
- -cpu host \
- --enable-kvm \
- -nographic
+
+
 ```
 
 ```
-sudo qemu-system-aarch64 -fsdev local,id=myid,path=$(pwd)/fs0,security_model=none \
- -device virtio-9p-pci,fsdev=myid,mount_tag=rootfs,disablemodern=on,disable-legacy=off \
- -netdev bridge,id=en0,br=br0 \
- -device virtio-net-pci,netdev=en0 \
- -kernel "build/app-redis_kvm-arm64" \
- -append "netdev.ipv4_addr=172.44.0.2 netdev.ipv4_gw_addr=172.44.0.1 netdev.ipv4_subnet_mask=255.255.255.0 -- /redis.conf" \
- -machine virt \
- -cpu host \
- --enable-kvm \
- -nographic
+
 ```
+
+```
+
+
+
 
 
 
