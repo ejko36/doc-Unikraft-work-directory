@@ -7,14 +7,18 @@
 ### 예제 ) Redis Application
 
 
-### Dependency Graph
+### General Dependency Graph
 ![plot](./pictures/dependency_graph.PNG)
 
 
 Redis Application에 필요한 Unikraft 기본 라이브러리
 1. [lib-pthread-embedded](https://github.com/unikraft/lib-pthread-embedded.git)
-2. lib-newlib
-3. lib-lwip
+2. [lib-newlib](https://github.com/unikraft/lib-newlib)
+3. [lib-lwip](https://github.com/unikraft/lib-lwip)
+
+Redis Application 실행 라이브러리
+1. [redis](https://github.com/unikraft/lib-redis.git)
+
 
 ### Makefile
 ```
@@ -50,7 +54,6 @@ $(MAKECMDGOALS):
 
 File System
 현재 Unikraft에서 지원하고 있는 File system(2022년 12월 기준)
-[o] Initrd   Initrd
 
 | Unikraft File System | Intel               | Raspi              |
 | -------------------  | ------------------- | ------------------ |
