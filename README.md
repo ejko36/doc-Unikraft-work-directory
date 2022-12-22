@@ -64,7 +64,10 @@ $(MAKECMDGOALS):
 	@$(MAKE) -C $(UK_ROOT) A=$(PWD) L=$(LIBS) $(MAKECMDGOALS)
 ```
 
+
+
 ## 환경 설정
+
 
 
 1. Architecture Selection
@@ -91,12 +94,16 @@ $(MAKECMDGOALS):
 		: Default root file system 로 9pfs 를 사용하도록 설정 (아래 표와 같이 Arm 환경에서 9pfs 이외의 파일시스템은 지원 X)
 ```
 
+
+
 ### Unikraft에서 지원하고 있는 File system(2022년 12월 기준)
 
 | Unikraft File System | Intel               | Raspi              |
 | -------------------  | ------------------- | ------------------ |
 | 9pfs                 | :heavy_check_mark:  | :heavy_check_mark: |
 | initrd               | :heavy_check_mark:  | :x:                |
+
+
 
 
 ## 실행 방법
@@ -113,30 +120,28 @@ sudo ip l set dev br0 up
 QEMU + Unikraft Image 실행
 
 
-Unikraft에서 지원하는 qemu-guest https://github.com/unikraft/kraft/blob/staging/scripts/qemu-guest
+Unikraft에서 지원하는 [qemu-guest](https://github.com/unikraft/kraft/blob/staging/scripts/qemu-guest)
+으로 실행
 
 ```
-sudo qemu-system-aarch64 -fsdev local,id=myid,path=$(pwd)/fs0,security_model=none \
-                         -device virtio-9p-pci,fsdev=myid,mount_tag=rootfs,disable-modern=on,disable-legacy=off \
-                         -netdev bridge,id=en0,br=br0 \
-                         -device virtio-net-pci,netdev=en0 \
-                         -kernel "images/app-redis_kvm-arm64" \
-                         -append "netdev.ipv4_addr=172.44.0.2 netdev.ipv4_gw_addr=172.44.0.1 netdev.ipv4_subnet_mask=255.255.255.0 -- /redis.conf " \
-                         -machine virt \
-                         -cpu max --enable-kvm \
-			            -m 1024 \
-                         -nographic
+taskset -c 0 qemu-guest -t arm64v -k build/app-redis_kvm-arm64  \
+-a "netdev.ipv4_addr=172.44.0.2 netdev.ipv4_gw_addr=172.44.0.1 netdev.ipv4_subnet_mask=255.255.255.0 -- /redis.conf" \
+-m 1024 -b br0 -e $(pwd)/fs0
 
 ```
 
-Unikraft에서 지원하는 qemu-guest 스크립트로 실행
 
-
-```
+vhost 기능을 사용한 채로 실행 시 qemu-guest의 561줄 code 다음과 같이 변경
 
 ```
+- QEMU_ARGS+=("tap,id=hnet${NICID},vhost=off,script=${TEMP}/ifup${NICID}.sh,downscript=${TEMP}/ifdown${NICID}.sh")
++ QEMU_ARGS+=("tap,id=hnet${NICID},vhost=on,script=${TEMP}/ifup${NICID}.sh,downscript=${TEMP}/ifdown${NICID}.sh")
+```
 
-Trouble shooting
+
+
+
+## Trouble shooting
 
 9pfs file system mount 에러 발생시 qemu-guest의 640줄 code line 다음과 같이 변경
 ```
