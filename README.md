@@ -94,6 +94,13 @@ $(MAKECMDGOALS):
 		: Default root file system 로 9pfs 를 사용하도록 설정 (아래 표와 같이 Arm 환경에서 9pfs 이외의 파일시스템은 지원 X)
 ```
 
+4. Performance boost
+	- 현재 KVM platform과 Unikraft에서 성능 향상을 위해 제공하는 Performance Optimization(performance/size) 기능이 제대로 동작하고 있지 않아 ARM 환경에서 Unikraft 빌드시 이를 반드시 disable 해야 함 (KVM platform error 발생)
+
+```
+	- Optimization level : No optimizations
+```
+
 
 
 ### Unikraft에서 지원하고 있는 File system(2022년 12월 기준)
