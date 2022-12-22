@@ -120,7 +120,7 @@ sudo ip l set dev br0 up
 QEMU + Unikraft Image 실행
 
 
-Unikraft에서 지원하는 [qemu-guest](https://github.com/unikraft/kraft/blob/staging/scripts/qemu-guest)
+Unikraft에서 제공하는 qemu emulator 실행 스크립트 [qemu-guest](https://github.com/unikraft/kraft/blob/staging/scripts/qemu-guest)
 으로 실행
 
 ```
