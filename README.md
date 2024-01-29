@@ -163,6 +163,11 @@ KVM 사용 시 qemu-guest script를 다음과 같이 수정 (747줄)
 + QEMU_BASE_ARGS+=("host")
 ```
 
+QEMU emulator 빌드 실행시 virtio-9p-device 가 존재하지 않는다 뜨면 아래 command 확인
+```
+ ./configure --enable-virtfs --enable-kvm 
+```
+ 
 
 
 
