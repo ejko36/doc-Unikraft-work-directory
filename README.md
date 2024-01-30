@@ -167,7 +167,32 @@ QEMU emulator 빌드 실행시 virtio-9p-device 가 존재하지 않는다 뜨�
 ```
  ./configure --enable-virtfs --enable-kvm 
 ```
- 
+
+
+Unikraft UK_FEATURE 빌드 에러
+- UK_FEATURE*의 parameter들이 아래와 같이 바꼈으니 참고 UK_NETDEV_F*
+```
+/**
+ * The netdevice support rx/tx interrupt.
+ */
+#define UK_FEATURE_RXQ_INTR_BIT		    0
+#define UK_FEATURE_RXQ_INTR_AVAILABLE  (1UL << UK_FEATURE_RXQ_INTR_BIT)
+#define UK_FEATURE_TXQ_INTR_BIT		    1
+#define UK_FEATURE_TXQ_INTR_AVAILABLE  (1UL << UK_FEATURE_TXQ_INTR_BIT)
+#define UK_NETDEV_F_RXQ_INTR_BIT	0
+#define UK_NETDEV_F_RXQ_INTR		(1UL << UK_NETDEV_F_RXQ_INTR_BIT)
+#define UK_NETDEV_F_TXQ_INTR_BIT	1
+#define UK_NETDEV_F_TXQ_INTR		(1UL << UK_NETDEV_F_TXQ_INTR_BIT)
+
+#define uk_netdev_rxintr_supported(feature)	\
+	(feature & (UK_FEATURE_RXQ_INTR_AVAILABLE))
+	(feature & (UK_NETDEV_F_RXQ_INTR))
+#define uk_netdev_txintr_supported(feature)	\
+	(feature & (UK_NETDEV_F_TXQ_INTR))
+
+/**
+ * A structure used to describe network device capabilities.
+ ```
 
 
 
